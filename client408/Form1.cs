@@ -21,10 +21,19 @@ namespace client_408
         {
             try
             {
-                tcpListener = new TcpListener(IPAddress.Parse(ip), port);
-                listenThread = new Thread(new ThreadStart(ListenForClients));
-                listenThread.Start();
-                richTextBox6.AppendText($"Server started on {ip}:{port}\n");
+                IPAddress ipAddress;
+
+                if (IPAddress.TryParse(ip, out ipAddress))
+                {
+                    tcpListener = new TcpListener(ipAddress, port);
+                    listenThread = new Thread(new ThreadStart(ListenForClients));
+                    listenThread.Start();
+                    richTextBox6.AppendText($"Server started on {ip}:{port}\n");
+                }
+                else
+                {
+                    richTextBox6.AppendText($"Invalid IP address: {ip}\n");
+                }
             }
             catch (Exception ex)
             {
@@ -32,22 +41,36 @@ namespace client_408
             }
         }
 
-        private void ListenForClients()
-        {
-            tcpListener.Start();
 
-            while (true)
-            {
-                TcpClient tcpClient = tcpListener.AcceptTcpClient();
-                ClientInfo clientInfo = new ClientInfo(tcpClient);
-                clients.Add(clientInfo);
+      private void UpdateRichTextBox(string message)
+{
+    if (richTextBox6.InvokeRequired)
+    {
+        richTextBox6.Invoke(new Action<string>(UpdateRichTextBox), message);
+    }
+    else
+    {
+        richTextBox6.AppendText(message);
+    }
+}
 
-                Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
-                clientThread.Start(clientInfo);
+private void ListenForClients()
+{
+    tcpListener.Start();
 
-                richTextBox6.AppendText($"Client connected: {clientInfo.IP}:{clientInfo.Port}\n");
-            }
-        }
+    while (true)
+    {
+        TcpClient tcpClient = tcpListener.AcceptTcpClient();
+        ClientInfo clientInfo = new ClientInfo(tcpClient);
+        clients.Add(clientInfo);
+
+        Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
+        clientThread.Start(clientInfo);
+
+        UpdateRichTextBox($"Client connected: {clientInfo.IP}:{clientInfo.Port}\n");
+    }
+}
+
 
         private void HandleClientComm(object clientObj)
         {
@@ -66,19 +89,20 @@ namespace client_408
                         break;
 
                     string data = Encoding.ASCII.GetString(message, 0, bytesRead);
+                    UpdateRichTextBox($"Received message from {clientInfo.IP}:{clientInfo.Port}: {data}\n");
                     ProcessMessage(clientInfo, data);
                 }
             }
             catch (Exception ex)
             {
-                richTextBox6.AppendText($"Error with client {clientInfo.IP}:{clientInfo.Port}: {ex.Message}\n");
+                UpdateRichTextBox($"Error with client {clientInfo.IP}:{clientInfo.Port}: {ex.Message}\n");
             }
             finally
             {
                 clientStream.Close();
                 tcpClient.Close();
                 clients.Remove(clientInfo);
-                richTextBox6.AppendText($"Client disconnected: {clientInfo.IP}:{clientInfo.Port}\n");
+                UpdateRichTextBox($"Client disconnected: {clientInfo.IP}:{clientInfo.Port}\n");
             }
         }
 
@@ -206,20 +230,7 @@ namespace client_408
             }
         }
 
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            string ip = richTextBox1.Text;
-            int port;
-
-            if (int.TryParse(richTextBox2.Text, out port))
-            {
-                StartServer(ip, port);
-            }
-            else
-            {
-                richTextBox6.AppendText("Invalid port number.\n");
-            }
-        }
+    
 
         private void SendToClient(ClientInfo clientInfo, string message)
         {
@@ -235,5 +246,19 @@ namespace client_408
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string ip = richTextBox1.Text;
+            int port;
+
+            if (int.TryParse(richTextBox2.Text, out port))
+            {
+                StartServer(ip, port);
+            }
+            else
+            {
+                richTextBox6.AppendText("Invalid port number.\n");
+            }
+        }
     }
 }
