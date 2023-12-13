@@ -9,6 +9,20 @@ namespace Server_Application_CS408
 {
     public partial class Server_Application : Form
     {
+        private class ClientInfo
+        {
+            public TcpClient TcpClient { get; }
+            public string IP { get; }
+            public int Port { get; }
+
+            public ClientInfo(TcpClient tcpClient)
+            {
+                TcpClient = tcpClient;
+                var endPoint = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
+                IP = endPoint.Address.ToString();
+                Port = endPoint.Port;
+            }
+        }
 
         private TcpListener tcpListener;
         private Thread listenThread;
@@ -31,6 +45,7 @@ namespace Server_Application_CS408
                     listenThread = new Thread(new ThreadStart(ListenForClients));
                     listenThread.Start();
                     richTextBox_Actions.AppendText($"Server started on {ip}:{port}\n");
+                    button_ServerStart.Enabled = false;     // Because all the inputs are valid and worked, we can disable the button from now on.
                 }
                 else
                 {
@@ -234,22 +249,6 @@ namespace Server_Application_CS408
                     break;
             }
         }
-
-        private class ClientInfo
-        {
-            public TcpClient TcpClient { get; }
-            public string IP { get; }
-            public int Port { get; }
-
-            public ClientInfo(TcpClient tcpClient)
-            {
-                TcpClient = tcpClient;
-                var endPoint = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
-                IP = endPoint.Address.ToString();
-                Port = endPoint.Port;
-            }
-        }
-
         private void SendToClient(ClientInfo clientInfo, string message)
         {
             try
@@ -263,7 +262,6 @@ namespace Server_Application_CS408
                 richTextBox_Actions.AppendText($"Error sending message to {clientInfo.IP}:{clientInfo.Port}: {ex.Message}\n");
             }
         }
-
         private void button_ServerStart_Click(object sender, EventArgs e)
         {
             string ip = textBox_IP.Text;
@@ -275,9 +273,9 @@ namespace Server_Application_CS408
             }
             else
             {
-                richTextBox_Actions.AppendText("Invalid port number.\n");
-                // Hasan Firat Yilmaz
+                richTextBox_Actions.AppendText("Port number couldn't be parsed, try it again with a valid port value!\n");
             }
         }
+
     }
 }
