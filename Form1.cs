@@ -72,9 +72,11 @@ namespace Server_Application_CS408
         private void ListenForClients()
         {
             tcpListener.Start();
-
+            
             while (true)
             {
+                // TRY & CATCH BLOCK MIGHT BE NECESSARY FOR THE COMMENT THREADS!
+
                 TcpClient tcpClient = tcpListener.AcceptTcpClient();
                 ClientInfo clientInfo = new ClientInfo(tcpClient);
                 clients.Add(clientInfo);
@@ -170,7 +172,6 @@ namespace Server_Application_CS408
                         {
                             richTextBox_IF100.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to IF100\n");
                         }));
-                        //richTextBox3.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to IF100\n");
                     }
                     break;
                 case "SPS101":
@@ -182,17 +183,13 @@ namespace Server_Application_CS408
                         {
                             richTextBox_SPS101.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to SPS101\n");
                         }));
-                        //richTextBox4.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to SPS101\n");
                     }
                     break;
                 default:
-
-
                     Invoke(new Action(() =>
                     {
                         richTextBox_Actions.AppendText($"Invalid channel.");
                     }));
-                    //richTextBox6.AppendText($"Invalid channel: {channel}\n");
                     break;
             }
         }
@@ -206,18 +203,28 @@ namespace Server_Application_CS408
                     {
                         subscribedClientsIF100.Remove(clientInfo);
 
-                        richTextBox_IF100.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} unsubscribed from IF100\n");
+                        Invoke(new Action(() =>
+                        {
+                            richTextBox_IF100.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} unsubscribed from IF100\n");
+                        }));
                     }
                     break;
                 case "SPS101":
                     if (subscribedClientsSPS101.Contains(clientInfo))
                     {
                         subscribedClientsSPS101.Remove(clientInfo);
-                        richTextBox_SPS101.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} unsubscribed from SPS101\n");
+
+                        Invoke(new Action(() =>
+                        {
+                            richTextBox_SPS101.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} unsubscribed from SPS101\n");
+                        }));
                     }
                     break;
                 default:
-                    richTextBox_Actions.AppendText($"Invalid channel: {channel}\n");
+                    Invoke(new Action(() =>
+                    {
+                        richTextBox_Actions.AppendText($"Invalid channel: {channel}\n");
+                    }));
                     break;
             }
         }
