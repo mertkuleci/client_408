@@ -158,6 +158,21 @@ namespace Server_Application_CS408
 
         private List<ClientInfo> subscribedClientsIF100 = new List<ClientInfo>();
         private List<ClientInfo> subscribedClientsSPS101 = new List<ClientInfo>();
+        private List<ClientInfo> allSubscribedClients = new List<ClientInfo>();
+
+        private void UpdateSubscribedClientsList(string channel, List<ClientInfo> subscribedClients, RichTextBox richTextBox)
+        {
+            Invoke(new Action(() =>
+            {
+                richTextBox.Clear();
+
+                foreach (var client in subscribedClients)
+                {
+                    richTextBox.AppendText($"Client {client.IP}:{client.Port}\n");
+                }
+            }));
+        }
+
 
         private void SubscribeToChannel(ClientInfo clientInfo, string channel)
         {
@@ -168,10 +183,13 @@ namespace Server_Application_CS408
                     {
                         subscribedClientsIF100.Add(clientInfo);
 
-                        Invoke(new Action(() =>
+                        if (!allSubscribedClients.Contains(clientInfo))
                         {
-                            richTextBox_IF100.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to IF100\n");
-                        }));
+                            allSubscribedClients.Add(clientInfo);
+                            UpdateSubscribedClientsList("All", allSubscribedClients, richTextBox_AllChannels);
+                        }
+
+                        UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     }
                     break;
                 case "SPS101":
@@ -179,10 +197,13 @@ namespace Server_Application_CS408
                     {
                         subscribedClientsSPS101.Add(clientInfo);
 
-                        Invoke(new Action(() =>
+                        if (!allSubscribedClients.Contains(clientInfo))
                         {
-                            richTextBox_SPS101.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to SPS101\n");
-                        }));
+                            allSubscribedClients.Add(clientInfo);
+                            UpdateSubscribedClientsList("All", allSubscribedClients, richTextBox_AllChannels);
+                        }
+
+                        UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
                     }
                     break;
                 default:
@@ -203,10 +224,13 @@ namespace Server_Application_CS408
                     {
                         subscribedClientsIF100.Remove(clientInfo);
 
-                        Invoke(new Action(() =>
+                        if (!subscribedClientsSPS101.Contains(clientInfo))
                         {
-                            richTextBox_IF100.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} unsubscribed from IF100\n");
-                        }));
+                            allSubscribedClients.Remove(clientInfo);
+                            UpdateSubscribedClientsList("All", allSubscribedClients, richTextBox_AllChannels);
+                        }
+
+                        UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     }
                     break;
                 case "SPS101":
@@ -214,10 +238,13 @@ namespace Server_Application_CS408
                     {
                         subscribedClientsSPS101.Remove(clientInfo);
 
-                        Invoke(new Action(() =>
+                        if (!subscribedClientsIF100.Contains(clientInfo))
                         {
-                            richTextBox_SPS101.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} unsubscribed from SPS101\n");
-                        }));
+                            allSubscribedClients.Remove(clientInfo);
+                            UpdateSubscribedClientsList("All", allSubscribedClients, richTextBox_AllChannels);
+                        }
+
+                        UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
                     }
                     break;
                 default:
