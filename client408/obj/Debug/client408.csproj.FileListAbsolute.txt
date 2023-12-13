@@ -1,0 +1,11 @@
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\bin\Debug\client408.exe.config
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\bin\Debug\client408.exe
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\bin\Debug\client408.pdb
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\obj\Debug\client408.csproj.AssemblyReference.cache
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\obj\Debug\client408.csproj.SuggestedBindingRedirects.cache
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\obj\Debug\client_408.Form1.resources
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\obj\Debug\client408.Properties.Resources.resources
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\obj\Debug\client408.csproj.GenerateResource.cache
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\obj\Debug\client408.csproj.CoreCompileInputs.cache
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\obj\Debug\client408.exe
+C:\Users\HasanFıratYılmaz\Source\Repos\HFyilmaz\Server_Application_408\client408\obj\Debug\client408.pdb
