@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Server_Application_CS408/1.0.0": {
+        "runtime": {
+          "Server_Application_CS408.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Server_Application_CS408/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
