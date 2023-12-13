@@ -89,7 +89,7 @@ private void ListenForClients()
                         break;
 
                     string data = Encoding.ASCII.GetString(message, 0, bytesRead);
-                    UpdateRichTextBox($"Received message from {clientInfo.IP}:{clientInfo.Port}: {data}\n");
+                    //UpdateRichTextBox($"Received message from {clientInfo.IP}:{clientInfo.Port}: {data}\n");
                     ProcessMessage(clientInfo, data);
                 }
             }
@@ -151,18 +151,34 @@ private void ListenForClients()
                     if (!subscribedClientsIF100.Contains(clientInfo))
                     {
                         subscribedClientsIF100.Add(clientInfo);
-                        richTextBox3.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to IF100\n");
+
+                        Invoke(new Action(() =>
+                        {
+                            richTextBox3.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to IF100\n");
+                        }));
+                        //richTextBox3.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to IF100\n");
                     }
                     break;
                 case "SPS101":
                     if (!subscribedClientsSPS101.Contains(clientInfo))
                     {
                         subscribedClientsSPS101.Add(clientInfo);
-                        richTextBox4.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to SPS101\n");
+
+                        Invoke(new Action(() =>
+                        {
+                            richTextBox4.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to SPS101\n");
+                        }));
+                        //richTextBox4.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} subscribed to SPS101\n");
                     }
                     break;
                 default:
-                    richTextBox6.AppendText($"Invalid channel: {channel}\n");
+
+
+                    Invoke(new Action(() =>
+                    {
+                        richTextBox6.AppendText($"Invalid channel.");
+                    }));
+                    //richTextBox6.AppendText($"Invalid channel: {channel}\n");
                     break;
             }
         }
@@ -175,6 +191,7 @@ private void ListenForClients()
                     if (subscribedClientsIF100.Contains(clientInfo))
                     {
                         subscribedClientsIF100.Remove(clientInfo);
+
                         richTextBox3.AppendText($"Client {clientInfo.IP}:{clientInfo.Port} unsubscribed from IF100\n");
                     }
                     break;
@@ -221,16 +238,19 @@ private void ListenForClients()
         private class ClientInfo
         {
             public TcpClient TcpClient { get; }
-            public string IP => ((IPEndPoint)TcpClient.Client.RemoteEndPoint).Address.ToString();
-            public int Port => ((IPEndPoint)TcpClient.Client.RemoteEndPoint).Port;
+            public string IP { get; }
+            public int Port { get; }
 
             public ClientInfo(TcpClient tcpClient)
             {
                 TcpClient = tcpClient;
+                var endPoint = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
+                IP = endPoint.Address.ToString();
+                Port = endPoint.Port;
             }
         }
 
-    
+
 
         private void SendToClient(ClientInfo clientInfo, string message)
         {
