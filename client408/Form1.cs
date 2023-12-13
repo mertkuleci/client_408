@@ -259,6 +259,7 @@ private void ListenForClients()
             {
                 richTextBox6.AppendText("Invalid port number.\n");
                 //Some redundant comment to test github
+                // Mert Kuleci büyüktür
             }
         }
     }
