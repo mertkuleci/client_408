@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -29,6 +28,7 @@ namespace Server_Application_CS408
         private TcpListener tcpListener;
         private Thread listenThread;
         private List<ClientInfo> clients = new List<ClientInfo>();
+
         public Server_Application()
         {
             InitializeComponent();
@@ -46,9 +46,7 @@ namespace Server_Application_CS408
                     listenThread = new Thread(new ThreadStart(ListenForClients));
                     listenThread.Start();
                     richTextBox_Actions.AppendText($"Server started on {ip}:{port}\n");
-                    button_ServerStart.Enabled = false;     // Because all the inputs are valid and worked,
-                    textBox_IP.Enabled = false;             // we can disable the button from now on.
-                    textBox_Port.Enabled = false;
+                    button_ServerStart.Enabled = false;     // Because all the inputs are valid and worked, we can disable the button from now on.
                 }
                 else
                 {
@@ -62,36 +60,32 @@ namespace Server_Application_CS408
         }
         private void UpdateRichTextBox(string message)
         {
-            // Updates the "Actions" rich text box.
-            if (richTextBox_Actions.InvokeRequired)
+            if (richTextBox_Actions.InvokeRequired && !richTextBox_Actions.IsDisposed)
             {
                 richTextBox_Actions.Invoke(new Action<string>(UpdateRichTextBox), message);
             }
-            else
+            else if (!richTextBox_Actions.IsDisposed)
             {
                 richTextBox_Actions.AppendText(message);
             }
+
         }
 
         private void ListenForClients()
         {
-            try
-            {
-                tcpListener.Start();
+            // TRY & CATCH BLOCK DEFINETELY!
+            tcpListener.Start();
 
-                while (true)
-                {
-                    TcpClient tcpClient = tcpListener.AcceptTcpClient();
-                    ClientInfo clientInfo = new ClientInfo(tcpClient);
-                    clients.Add(clientInfo);
-
-                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
-                    clientThread.Start(clientInfo);
-                }
-            }
-            catch (Exception ex)
+            while (true)
             {
-                UpdateRichTextBox($"Error accepting client: {ex.Message}\n");
+                // TRY & CATCH BLOCK MIGHT BE NECESSARY FOR THE COMMENT THREADS!
+
+                TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                ClientInfo clientInfo = new ClientInfo(tcpClient);
+                clients.Add(clientInfo);
+
+                Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
+                clientThread.Start(clientInfo);
             }
         }
 
@@ -113,6 +107,7 @@ namespace Server_Application_CS408
                     bytesRead = clientStream.Read(message, 0, 4096);
                     if (bytesRead == 0)
                         break;
+
 
                     string data = Encoding.ASCII.GetString(message, 0, bytesRead);
 
@@ -142,8 +137,10 @@ namespace Server_Application_CS408
 
         private void HandleClientConnect(ClientInfo clientInfo, string username)
         {
+            // Check if the username is already in use
             if (IsUsernameUnique(username))
             {
+                // Username is unique, store it in the ClientInfo instance
                 clientInfo.Username = username;
 
                 // Print the username in the actions richtext box after it is parsed properly.
@@ -152,7 +149,8 @@ namespace Server_Application_CS408
             }
             else
             {
-                UpdateRichTextBox("A client tried to access with a username that is already exist. Request is rejected\n");
+                // Username is already in use, disconnect the client
+                UpdateRichTextBox($"A client tried to access with a username that is already exist. Request is rejected\n");
                 DisconnectClient(clientInfo);
             }
         }
@@ -181,36 +179,35 @@ namespace Server_Application_CS408
             // Assuming messages are formatted as "ACTION|CHANNEL|DATA"
             string[] parts = message.Split('|');
 
-            if (parts.Length >= 2)
-            {
-                string action = parts[0].ToUpper();
-                string channel = parts[1].ToUpper();
+            string action = parts[0].ToUpper();
+            string channel = parts[1];
 
-                switch (action)
-                {
-                    case "CONNECT":
-                        string username = parts[1];
-                        HandleClientConnect(clientInfo, username);
-                        break;
-                    case "SUBSCRIBE":
-                        SubscribeToChannel(clientInfo, channel);
-                        break;
-                    case "UNSUBSCRIBE":
-                        UnsubscribeFromChannel(clientInfo, channel);
-                        break;
-                    case "SEND":
-                        if (parts.Length >= 3)
-                        {
-                            string data = parts[2];
-                            SendMessageToChannel(clientInfo, channel, data);
-                        }
-                        break;
-                }
-            }
-            else
+            string debug = action + " " + channel;
+            //UpdateRichTextBox(debug + "\n");
+
+            switch (action)
             {
-                richTextBox_Actions.AppendText($"Invalid message format from {clientInfo.Username}: {message}\n");
+                case "CONNECT":
+                    string username = parts[1];
+                    HandleClientConnect(clientInfo, username);
+                    break;
+                case "SUBSCRIBE":
+                    SubscribeToChannel(clientInfo, channel);
+                    break;
+                case "UNSUBSCRIBE":
+                    UnsubscribeFromChannel(clientInfo, channel);
+                    break;
+                case "SEND":
+
+                    string data = parts[2];
+
+
+                    SendMessageToChannel(clientInfo, channel, data);
+
+                    break;
             }
+
+
         }
 
         private List<ClientInfo> subscribedClientsIF100 = new List<ClientInfo>();
@@ -228,6 +225,7 @@ namespace Server_Application_CS408
                 }
             }));
         }
+
 
         private void SubscribeToChannel(ClientInfo clientInfo, string channel)
         {
@@ -285,24 +283,23 @@ namespace Server_Application_CS408
 
         private void SendMessageToChannel(ClientInfo sender, string channel, string data)
         {
-            switch (channel.ToUpper())
+            switch (channel)
             {
                 case "IF100":
                     foreach (var subscriber in subscribedClientsIF100)
                     {
-                        if (subscriber != sender) // Don't send the message back to the sender
-                        {
-                            SendToClient(subscriber, $"Message from {sender.Username} on IF100: {data}");
-                        }
+
+
+                        SendToClient(channel, subscriber, $"{sender.Username}: {data} \n");
+
                     }
                     break;
                 case "SPS101":
                     foreach (var subscriber in subscribedClientsSPS101)
                     {
-                        if (subscriber != sender) // Don't send the message back to the sender
-                        {
-                            SendToClient(subscriber, $"Message from {sender.Username} on SPS101: {data}");
-                        }
+
+                        SendToClient(channel, subscriber, $"{sender.Username}: {data} \n");
+
                     }
                     break;
                 default:
@@ -310,10 +307,11 @@ namespace Server_Application_CS408
                     break;
             }
         }
-        private void SendToClient(ClientInfo clientInfo, string message)
+        private void SendToClient(string channel, ClientInfo clientInfo, string message)
         {
             try
             {
+                message = channel + "|" + message;
                 NetworkStream clientStream = clientInfo.TcpClient.GetStream();
                 byte[] buffer = Encoding.ASCII.GetBytes(message);
                 clientStream.Write(buffer, 0, buffer.Length);
@@ -336,28 +334,6 @@ namespace Server_Application_CS408
             {
                 richTextBox_Actions.AppendText("Port number couldn't be parsed, try it again with a valid port value!\n");
             }
-        }
-        private void Form1_FormClosing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Close all client connections
-            foreach (var clientInfo in clients)
-            {
-                DisconnectClient(clientInfo);
-            }
-
-            // Stop listening for new clients
-            if (tcpListener != null)
-            {
-                tcpListener.Stop();
-            }            
-
-            // Notify clients that the server is closing
-            foreach (var clientInfo in clients)
-            {
-                SendToClient(clientInfo, "Server is closed!");
-            }
-
-            UpdateRichTextBox("Server stopped.\n");
         }
 
     }
