@@ -14,7 +14,9 @@ namespace Server_Application_CS408
             public TcpClient TcpClient { get; }
             public string IP { get; }
             public int Port { get; }
-            public string Username { get; set; }  // Could be set after its initialization.
+            public string Username { get; set; } 
+            
+            public bool isConnected { get; set; }// Could be set after its initialization.
 
             public ClientInfo(TcpClient tcpClient)
             {
@@ -143,10 +145,15 @@ namespace Server_Application_CS408
                 // Username is unique, store it in the ClientInfo instance
                 clientInfo.Username = username;
 
+                
+                clientInfo.isConnected = true;
+
                 // Print the username in the actions richtext box after it is parsed properly.
                 UpdateRichTextBox($"Client connected: {clientInfo.Username}\n");
                 UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
-                SendToClient("CONNECTED", clientInfo, "Connected");
+                SendToClient($"CONNECTED", clientInfo, $"{username} connected to the server \n");
+
+
             }
             else
             {
@@ -183,6 +190,7 @@ namespace Server_Application_CS408
 
             string action = parts[0].ToUpper();
             string channel = parts[1];
+            string username;
 
             string debug = action + " " + channel;
             //UpdateRichTextBox(debug + "\n");
@@ -190,18 +198,59 @@ namespace Server_Application_CS408
             switch (action)
             {
                 case "CONNECT":
-                    string username = parts[1];
+                    username = parts[1];
                     HandleClientConnect(clientInfo, username);
                     break;
-                case "SUBSCRIBE":
-                    SubscribeToChannel(clientInfo, channel);
+                case "DISCONNECT":
+                    username = parts[1];
+                    clientInfo.isConnected = false;
+                    SendToClient(action, clientInfo, $"Client disconnected: {clientInfo.Username}\n");
+                    UpdateRichTextBox($"Client disconnected: {clientInfo.Username}\n");
+
+                    clients.Remove(clientInfo);
+                    subscribedClientsIF100.Remove(clientInfo);
+                    subscribedClientsSPS101.Remove(clientInfo);
+
+                    UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
+                    UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
+                    UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
+
                     break;
+                case "SUBSCRIBE":
+                    if (clientInfo.isConnected == true)
+                    {
+                        
+                        SubscribeToChannel(clientInfo, channel);
+                        break;
+                    }
+                    break;
+                    
                 case "UNSUBSCRIBE":
-                    UnsubscribeFromChannel(clientInfo, channel);
+                    if (clientInfo.isConnected == true)
+                    {
+                        UnsubscribeFromChannel(clientInfo, channel);
+                        break;
+                    }
                     break;
                 case "SEND":
-                    string data = parts[2];
-                    SendMessageToChannel(clientInfo, channel, data);
+                    if (channel == "IF100")
+                    {
+                        if (clientInfo.isConnected == true && subscribedClientsIF100.Contains(clientInfo))
+                        {
+                            string data = parts[2];
+                            SendMessageToChannel(clientInfo, channel, data);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (clientInfo.isConnected == true && subscribedClientsSPS101.Contains(clientInfo))
+                        {
+                            string data = parts[2];
+                            SendMessageToChannel(clientInfo, channel, data);
+                            break;
+                        }
+                    }
                     break;
             }
 
