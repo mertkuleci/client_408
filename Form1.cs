@@ -190,6 +190,7 @@ namespace Server_Application_CS408
                 case "CONNECT":
                     string username = parts[1];
                     HandleClientConnect(clientInfo, username);
+                    SendToClient("CONNECTED", clientInfo, "Connected");
                     break;
                 case "SUBSCRIBE":
                     SubscribeToChannel(clientInfo, channel);
@@ -235,6 +236,7 @@ namespace Server_Application_CS408
                     if (!subscribedClientsIF100.Contains(clientInfo))
                     {
                         subscribedClientsIF100.Add(clientInfo);
+                        SendToClient(channel, clientInfo, "SubscribedtoIF100");
                         UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     }
                     break;
@@ -242,6 +244,8 @@ namespace Server_Application_CS408
                     if (!subscribedClientsSPS101.Contains(clientInfo))
                     {
                         subscribedClientsSPS101.Add(clientInfo);
+                        SendToClient(channel, clientInfo, "SubscribedtoSPS101");
+
                         UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
                     }
                     break;
@@ -262,6 +266,8 @@ namespace Server_Application_CS408
                     if (subscribedClientsIF100.Contains(clientInfo))
                     {
                         subscribedClientsIF100.Remove(clientInfo);
+                        SendToClient(channel, clientInfo, "UnsubscribedfromIF100");
+
                         UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     }
                     break;
@@ -269,6 +275,8 @@ namespace Server_Application_CS408
                     if (subscribedClientsSPS101.Contains(clientInfo))
                     {
                         subscribedClientsSPS101.Remove(clientInfo);
+                        SendToClient(channel, clientInfo, "UnsubscribedfromSPS101");
+
                         UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
                     }
                     break;
