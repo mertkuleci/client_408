@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -28,7 +29,6 @@ namespace Server_Application_CS408
         private TcpListener tcpListener;
         private Thread listenThread;
         private List<ClientInfo> clients = new List<ClientInfo>();
-
         public Server_Application()
         {
             InitializeComponent();
@@ -75,19 +75,23 @@ namespace Server_Application_CS408
 
         private void ListenForClients()
         {
-            // TRY & CATCH BLOCK DEFINETELY!
-            tcpListener.Start();
-
-            while (true)
+            try
             {
-                // TRY & CATCH BLOCK MIGHT BE NECESSARY FOR THE COMMENT THREADS!
+                tcpListener.Start();
 
-                TcpClient tcpClient = tcpListener.AcceptTcpClient();
-                ClientInfo clientInfo = new ClientInfo(tcpClient);
-                clients.Add(clientInfo);
+                while (true)
+                {
+                    TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                    ClientInfo clientInfo = new ClientInfo(tcpClient);
+                    clients.Add(clientInfo);
 
-                Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
-                clientThread.Start(clientInfo);
+                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
+                    clientThread.Start(clientInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateRichTextBox($"Error accepting client: {ex.Message}\n");
             }
         }
 
@@ -138,10 +142,8 @@ namespace Server_Application_CS408
 
         private void HandleClientConnect(ClientInfo clientInfo, string username)
         {
-            // Check if the username is already in use
             if (IsUsernameUnique(username))
             {
-                // Username is unique, store it in the ClientInfo instance
                 clientInfo.Username = username;
 
                 // Print the username in the actions richtext box after it is parsed properly.
@@ -150,8 +152,7 @@ namespace Server_Application_CS408
             }
             else
             {
-                // Username is already in use, disconnect the client
-                UpdateRichTextBox($"A client tried to access with a username that is already exist. Request is rejected\n");
+                UpdateRichTextBox("A client tried to access with a username that is already exist. Request is rejected\n");
                 DisconnectClient(clientInfo);
             }
         }
@@ -227,7 +228,6 @@ namespace Server_Application_CS408
                 }
             }));
         }
-
 
         private void SubscribeToChannel(ClientInfo clientInfo, string channel)
         {
@@ -349,15 +349,7 @@ namespace Server_Application_CS408
             if (tcpListener != null)
             {
                 tcpListener.Stop();
-            }
-
-            /*
-            // Abort all client threads
-            foreach (var clientThread in clientThreads)
-            {
-                clientThread.Abort();
-            }
-            */
+            }            
 
             // Notify clients that the server is closing
             foreach (var clientInfo in clients)
