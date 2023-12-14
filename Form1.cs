@@ -337,6 +337,36 @@ namespace Server_Application_CS408
                 richTextBox_Actions.AppendText("Port number couldn't be parsed, try it again with a valid port value!\n");
             }
         }
+        private void Form1_FormClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Close all client connections
+            foreach (var clientInfo in clients)
+            {
+                DisconnectClient(clientInfo);
+            }
+
+            // Stop listening for new clients
+            if (tcpListener != null)
+            {
+                tcpListener.Stop();
+            }
+
+            /*
+            // Abort all client threads
+            foreach (var clientThread in clientThreads)
+            {
+                clientThread.Abort();
+            }
+            */
+
+            // Notify clients that the server is closing
+            foreach (var clientInfo in clients)
+            {
+                SendToClient(clientInfo, "Server is closed!");
+            }
+
+            UpdateRichTextBox("Server stopped.\n");
+        }
 
     }
 }
