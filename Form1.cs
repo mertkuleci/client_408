@@ -88,6 +88,7 @@ namespace Server_Application_CS408
 
                 UpdateRichTextBox($"Client connected: {clientInfo.Port} &  {clientInfo.Username}\n");
                 // USE USERNAME INSTEAD BUT DOESNOT WORKS
+                //DENEME
             }
         }
 
