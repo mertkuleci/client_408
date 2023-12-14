@@ -146,11 +146,13 @@ namespace Server_Application_CS408
                 // Print the username in the actions richtext box after it is parsed properly.
                 UpdateRichTextBox($"Client connected: {clientInfo.Username}\n");
                 UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
+                SendToClient("CONNECTED", clientInfo, "Connected");
             }
             else
             {
                 // Username is already in use, disconnect the client
                 UpdateRichTextBox($"A client tried to access with a username that is already exist. Request is rejected\n");
+                SendToClient("NOTUNIQUE", clientInfo, "The username you are using is already claimed. Try it again with a different username.\n");
                 DisconnectClient(clientInfo);
             }
         }
@@ -190,7 +192,6 @@ namespace Server_Application_CS408
                 case "CONNECT":
                     string username = parts[1];
                     HandleClientConnect(clientInfo, username);
-                    SendToClient("CONNECTED", clientInfo, "Connected");
                     break;
                 case "SUBSCRIBE":
                     SubscribeToChannel(clientInfo, channel);
@@ -201,10 +202,8 @@ namespace Server_Application_CS408
                 case "SEND":
                     string data = parts[2];
                     SendMessageToChannel(clientInfo, channel, data);
-
                     break;
             }
-
 
         }
 
