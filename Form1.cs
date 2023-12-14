@@ -45,7 +45,7 @@ namespace Server_Application_CS408
                     tcpListener = new TcpListener(ipAddress, port);
                     listenThread = new Thread(new ThreadStart(ListenForClients));
                     listenThread.Start();
-                    richTextBox_Actions.AppendText($"Server started on {ip}:{port}\n");
+                    richTextBox_Actions.AppendText($"Server starting on {ip}:{port}\n");
                     button_ServerStart.Enabled = false;     // Because all the inputs are valid and worked, we can disable the button from now on.
                 }
                 else
@@ -73,20 +73,31 @@ namespace Server_Application_CS408
 
         private void ListenForClients()
         {
-            // TRY & CATCH BLOCK DEFINETELY!
-            tcpListener.Start();
+            // If the user enters invalid numerical values in the field,
+            // this try & catch blocks handles it and redirects the user to
+            // fix the input field values.
 
-            while (true)
+            try
             {
-                // TRY & CATCH BLOCK MIGHT BE NECESSARY FOR THE COMMENT THREADS!
+                tcpListener.Start();
 
-                TcpClient tcpClient = tcpListener.AcceptTcpClient();
-                ClientInfo clientInfo = new ClientInfo(tcpClient);
-                clients.Add(clientInfo);
+                while (true)
+                {
 
-                Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
-                clientThread.Start(clientInfo);
+                    TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                    ClientInfo clientInfo = new ClientInfo(tcpClient);
+                    clients.Add(clientInfo);
+
+                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
+                    clientThread.Start(clientInfo);
+                }
             }
+            catch (Exception ex)
+            { 
+                UpdateRichTextBox($"Server could not start properly. Something went wrong: {ex.Message}\n");
+                button_ServerStart.Invoke(new Action(() => button_ServerStart.Enabled = true));
+            }
+
         }
 
         private void HandleClientComm(object clientObj)
