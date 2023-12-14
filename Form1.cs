@@ -14,6 +14,7 @@ namespace Server_Application_CS408
             public TcpClient TcpClient { get; }
             public string IP { get; }
             public int Port { get; }
+            public string Username { get; set; }  // Could be set after its initialization.
 
             public ClientInfo(TcpClient tcpClient)
             {
@@ -71,6 +72,7 @@ namespace Server_Application_CS408
 
         private void ListenForClients()
         {
+            // TRY & CATCH BLOCK DEFINETELY!
             tcpListener.Start();
             
             while (true)
@@ -84,7 +86,8 @@ namespace Server_Application_CS408
                 Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
                 clientThread.Start(clientInfo);
 
-                UpdateRichTextBox($"Client connected: {clientInfo.IP}:{clientInfo.Port}\n");
+                UpdateRichTextBox($"Client connected: {clientInfo.Port} &  {clientInfo.Username}\n");
+                // USE USERNAME INSTEAD BUT DOESNOT WORKS
             }
         }
 
@@ -111,15 +114,21 @@ namespace Server_Application_CS408
             }
             catch (Exception ex)
             {
-                UpdateRichTextBox($"Error with client {clientInfo.IP}:{clientInfo.Port}: {ex.Message}\n");
+                UpdateRichTextBox($"Error with client {clientInfo.Username}: {ex.Message}\n");
             }
             finally
             {
                 clientStream.Close();
                 tcpClient.Close();
                 clients.Remove(clientInfo);
-                UpdateRichTextBox($"Client disconnected: {clientInfo.IP}:{clientInfo.Port}\n");
+                UpdateRichTextBox($"Client disconnected: {clientInfo.Username}\n");
             }
+        }
+
+        private void HandleClientConnect(ClientInfo clientInfo, string username)
+        {
+            // Storing the username in the ClientInfo instance or perform other actions as needed
+            clientInfo.Username = username;
         }
 
         private void ProcessMessage(ClientInfo clientInfo, string message)
@@ -134,6 +143,10 @@ namespace Server_Application_CS408
 
                 switch (action)
                 {
+                    case "CONNECT":
+                        string username = parts[1];
+                        HandleClientConnect(clientInfo, username);
+                        break;
                     case "SUBSCRIBE":
                         SubscribeToChannel(clientInfo, channel);
                         break;
@@ -152,7 +165,7 @@ namespace Server_Application_CS408
             }
             else
             {
-                richTextBox_Actions.AppendText($"Invalid message format from {clientInfo.IP}:{clientInfo.Port}: {message}\n");
+                richTextBox_Actions.AppendText($"Invalid message format from {clientInfo.Username}: {message}\n");
             }
         }
 
@@ -168,7 +181,7 @@ namespace Server_Application_CS408
 
                 foreach (var client in subscribedClients)
                 {
-                    richTextBox.AppendText($"Client {client.IP}:{client.Port}\n");
+                    richTextBox.AppendText($"Client {client.Username}\n");
                 }
             }));
         }
@@ -265,7 +278,7 @@ namespace Server_Application_CS408
                     {
                         if (subscriber != sender) // Don't send the message back to the sender
                         {
-                            SendToClient(subscriber, $"Message from {sender.IP}:{sender.Port} on IF100: {data}");
+                            SendToClient(subscriber, $"Message from {sender.Username} on IF100: {data}");
                         }
                     }
                     break;
@@ -274,7 +287,7 @@ namespace Server_Application_CS408
                     {
                         if (subscriber != sender) // Don't send the message back to the sender
                         {
-                            SendToClient(subscriber, $"Message from {sender.IP}:{sender.Port} on SPS101: {data}");
+                            SendToClient(subscriber, $"Message from {sender.Username} on SPS101: {data}");
                         }
                     }
                     break;
@@ -293,7 +306,7 @@ namespace Server_Application_CS408
             }
             catch (Exception ex)
             {
-                richTextBox_Actions.AppendText($"Error sending message to {clientInfo.IP}:{clientInfo.Port}: {ex.Message}\n");
+                richTextBox_Actions.AppendText($"Error sending message to {clientInfo.Username}: {ex.Message}\n");
             }
         }
         private void button_ServerStart_Click(object sender, EventArgs e)

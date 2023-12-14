@@ -16,9 +16,9 @@ C:\Users\HasanFıratYılmaz\source\repos\Server_Application_CS408\obj\Debug\net6
 C:\Users\HasanFıratYılmaz\source\repos\Server_Application_CS408\obj\Debug\net6.0-windows\Server_Application_CS408.genruntimeconfig.cache
 C:\Users\HasanFıratYılmaz\source\repos\Server_Application_CS408\obj\Debug\net6.0-windows\ref\Server_Application_CS408.dll
 C:\Users\HasanFıratYılmaz\source\repos\HFyilmaz\Server_Application_408\bin\Debug\net6.0-windows\Server_Application_CS408.exe
+C:\Users\HasanFıratYılmaz\source\repos\HFyilmaz\Server_Application_408\bin\Debug\net6.0-windows\Server_Application_CS408.dll
 C:\Users\HasanFıratYılmaz\source\repos\HFyilmaz\Server_Application_408\bin\Debug\net6.0-windows\Server_Application_CS408.deps.json
 C:\Users\HasanFıratYılmaz\source\repos\HFyilmaz\Server_Application_408\bin\Debug\net6.0-windows\Server_Application_CS408.runtimeconfig.json
-C:\Users\HasanFıratYılmaz\source\repos\HFyilmaz\Server_Application_408\bin\Debug\net6.0-windows\Server_Application_CS408.dll
 C:\Users\HasanFıratYılmaz\source\repos\HFyilmaz\Server_Application_408\bin\Debug\net6.0-windows\Server_Application_CS408.pdb
 C:\Users\HasanFıratYılmaz\source\repos\HFyilmaz\Server_Application_408\obj\Debug\net6.0-windows\Server_Application_CS408.csproj.AssemblyReference.cache
 C:\Users\HasanFıratYılmaz\source\repos\HFyilmaz\Server_Application_408\obj\Debug\net6.0-windows\Server_Application_CS408.Server_Application.resources
