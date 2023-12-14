@@ -199,10 +199,7 @@ namespace Server_Application_CS408
                     UnsubscribeFromChannel(clientInfo, channel);
                     break;
                 case "SEND":
-
                     string data = parts[2];
-
-
                     SendMessageToChannel(clientInfo, channel, data);
 
                     break;
@@ -226,7 +223,6 @@ namespace Server_Application_CS408
                 }
             }));
         }
-
 
         private void SubscribeToChannel(ClientInfo clientInfo, string channel)
         {
@@ -297,19 +293,16 @@ namespace Server_Application_CS408
                 case "IF100":
                     foreach (var subscriber in subscribedClientsIF100)
                     {
-
-
                         SendToClient(channel, subscriber, $"{sender.Username}: {data} \n");
-
                     }
+                    UpdateRichTextBox($"({channel}) {sender.Username}: {data}\n");
                     break;
                 case "SPS101":
                     foreach (var subscriber in subscribedClientsSPS101)
                     {
-
                         SendToClient(channel, subscriber, $"{sender.Username}: {data} \n");
-
                     }
+                    UpdateRichTextBox($"({channel}) {sender.Username}: {data}\n");
                     break;
                 default:
                     richTextBox_Actions.AppendText($"Invalid channel: {channel}\n");
