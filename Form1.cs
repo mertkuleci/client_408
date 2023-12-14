@@ -46,7 +46,9 @@ namespace Server_Application_CS408
                     listenThread = new Thread(new ThreadStart(ListenForClients));
                     listenThread.Start();
                     richTextBox_Actions.AppendText($"Server started on {ip}:{port}\n");
-                    button_ServerStart.Enabled = false;     // Because all the inputs are valid and worked, we can disable the button from now on.
+                    button_ServerStart.Enabled = false;     // Because all the inputs are valid and worked,
+                    textBox_IP.Enabled = false;             // we can disable the button from now on.
+                    textBox_Port.Enabled = false;
                 }
                 else
                 {
@@ -60,6 +62,7 @@ namespace Server_Application_CS408
         }
         private void UpdateRichTextBox(string message)
         {
+            // Updates the "Actions" rich text box.
             if (richTextBox_Actions.InvokeRequired)
             {
                 richTextBox_Actions.Invoke(new Action<string>(UpdateRichTextBox), message);
@@ -74,7 +77,7 @@ namespace Server_Application_CS408
         {
             // TRY & CATCH BLOCK DEFINETELY!
             tcpListener.Start();
-            
+
             while (true)
             {
                 // TRY & CATCH BLOCK MIGHT BE NECESSARY FOR THE COMMENT THREADS!
@@ -129,7 +132,7 @@ namespace Server_Application_CS408
 
                 if (clientInfo != null)
                     clients.Remove(clientInfo);
-                    UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
+                UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
             }
         }
 

@@ -41,7 +41,7 @@
             label_All = new Label();
             richTextBox_Actions = new RichTextBox();
             label_Actions = new Label();
-            label_ConnectedUsers = new Label();
+            label_Subscribe = new Label();
             SuspendLayout();
             // 
             // textBox_IP
@@ -99,6 +99,7 @@
             // 
             richTextBox_IF100.Location = new Point(53, 233);
             richTextBox_IF100.Name = "richTextBox_IF100";
+            richTextBox_IF100.ReadOnly = true;
             richTextBox_IF100.Size = new Size(213, 386);
             richTextBox_IF100.TabIndex = 7;
             richTextBox_IF100.Text = "";
@@ -107,6 +108,7 @@
             // 
             richTextBox_SPS101.Location = new Point(316, 233);
             richTextBox_SPS101.Name = "richTextBox_SPS101";
+            richTextBox_SPS101.ReadOnly = true;
             richTextBox_SPS101.Size = new Size(213, 386);
             richTextBox_SPS101.TabIndex = 9;
             richTextBox_SPS101.Text = "";
@@ -124,6 +126,7 @@
             // 
             richTextBox_AllChannels.Location = new Point(579, 233);
             richTextBox_AllChannels.Name = "richTextBox_AllChannels";
+            richTextBox_AllChannels.ReadOnly = true;
             richTextBox_AllChannels.Size = new Size(213, 386);
             richTextBox_AllChannels.TabIndex = 11;
             richTextBox_AllChannels.Text = "";
@@ -131,16 +134,17 @@
             // label_All
             // 
             label_All.AutoSize = true;
-            label_All.Location = new Point(672, 205);
+            label_All.Location = new Point(609, 205);
             label_All.Name = "label_All";
-            label_All.Size = new Size(32, 25);
+            label_All.Size = new Size(145, 25);
             label_All.TabIndex = 10;
-            label_All.Text = "All";
+            label_All.Text = "Connected Users";
             // 
             // richTextBox_Actions
             // 
             richTextBox_Actions.Location = new Point(912, 108);
             richTextBox_Actions.Name = "richTextBox_Actions";
+            richTextBox_Actions.ReadOnly = true;
             richTextBox_Actions.Size = new Size(323, 511);
             richTextBox_Actions.TabIndex = 13;
             richTextBox_Actions.Text = "";
@@ -154,21 +158,21 @@
             label_Actions.TabIndex = 12;
             label_Actions.Text = "Actions";
             // 
-            // label_ConnectedUsers
+            // label_Subscribe
             // 
-            label_ConnectedUsers.AutoSize = true;
-            label_ConnectedUsers.Location = new Point(355, 171);
-            label_ConnectedUsers.Name = "label_ConnectedUsers";
-            label_ConnectedUsers.Size = new Size(145, 25);
-            label_ConnectedUsers.TabIndex = 14;
-            label_ConnectedUsers.Text = "Connected Users";
+            label_Subscribe.AutoSize = true;
+            label_Subscribe.Location = new Point(207, 180);
+            label_Subscribe.Name = "label_Subscribe";
+            label_Subscribe.Size = new Size(164, 25);
+            label_Subscribe.TabIndex = 14;
+            label_Subscribe.Text = "Subscription Status";
             // 
             // Server_Application
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1262, 704);
-            Controls.Add(label_ConnectedUsers);
+            Controls.Add(label_Subscribe);
             Controls.Add(richTextBox_Actions);
             Controls.Add(label_Actions);
             Controls.Add(richTextBox_AllChannels);
@@ -203,6 +207,6 @@
         private Label label_All;
         private RichTextBox richTextBox_Actions;
         private Label label_Actions;
-        private Label label_ConnectedUsers;
+        private Label label_Subscribe;
     }
 }
