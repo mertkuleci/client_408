@@ -85,9 +85,6 @@ namespace Server_Application_CS408
 
                 Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
                 clientThread.Start(clientInfo);
-
-                UpdateRichTextBox($"Client connected: {clientInfo.Port} &  {clientInfo.Username}\n");
-                // USE USERNAME INSTEAD BUT DOESNOT WORKS
             }
         }
 
@@ -128,7 +125,9 @@ namespace Server_Application_CS408
         private void HandleClientConnect(ClientInfo clientInfo, string username)
         {
             // Storing the username in the ClientInfo instance or perform other actions as needed
+            // Printing the username in the actions richtext box after it is parsed properly.
             clientInfo.Username = username;
+            UpdateRichTextBox($"Client connected: {clientInfo.Username}\n");
         }
 
         private void ProcessMessage(ClientInfo clientInfo, string message)
