@@ -143,6 +143,21 @@ namespace Server_Application_CS408
                 if (clientInfo != null)
                     clients.Remove(clientInfo);
                 UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
+
+                if(clientInfo != null && subscribedClientsIF100.Contains(clientInfo))
+                {
+                    subscribedClientsIF100.Remove(clientInfo);
+                    UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
+                    UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the IF100 channel due to the connection termination\n");
+
+                }
+                if (clientInfo != null && subscribedClientsSPS101.Contains(clientInfo))
+                {
+                    subscribedClientsSPS101.Remove(clientInfo);
+                    UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
+                    UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the SPS101 channel due to the connection termination\n");
+                }
+
             }
         }
 
