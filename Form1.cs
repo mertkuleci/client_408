@@ -126,8 +126,10 @@ namespace Server_Application_CS408
                     clientInfo.TcpClient.Close();
                     UpdateRichTextBox($"Client disconnected: {clientInfo.Username}\n");
                 }
-                clients.Remove(clientInfo);
 
+                if (clientInfo != null)
+                    clients.Remove(clientInfo);
+                    UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
             }
         }
 
@@ -139,11 +141,9 @@ namespace Server_Application_CS408
                 // Username is unique, store it in the ClientInfo instance
                 clientInfo.Username = username;
 
-                // Add the client to the list of connected clients
-                connectedClients.Add(clientInfo);
-
                 // Print the username in the actions richtext box after it is parsed properly.
                 UpdateRichTextBox($"Client connected: {clientInfo.Username}\n");
+                UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
             }
             else
             {
@@ -155,7 +155,7 @@ namespace Server_Application_CS408
         private bool IsUsernameUnique(string username)
         {
             // Check if the username is unique among connected clients
-            return !connectedClients.Any(client => client.Username != null && client.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+            return !clients.Any(client => client.Username != null && client.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
         }
 
         private void DisconnectClient(ClientInfo clientInfo)
@@ -201,7 +201,6 @@ namespace Server_Application_CS408
                             SendMessageToChannel(clientInfo, channel, data);
                         }
                         break;
-                        // Add more cases for other actions if needed
                 }
             }
             else
@@ -212,7 +211,6 @@ namespace Server_Application_CS408
 
         private List<ClientInfo> subscribedClientsIF100 = new List<ClientInfo>();
         private List<ClientInfo> subscribedClientsSPS101 = new List<ClientInfo>();
-        private List<ClientInfo> connectedClients = new List<ClientInfo>();
 
         private void UpdateSubscribedClientsList(string channel, List<ClientInfo> subscribedClients, RichTextBox richTextBox)
         {
@@ -222,7 +220,7 @@ namespace Server_Application_CS408
 
                 foreach (var client in subscribedClients)
                 {
-                    richTextBox.AppendText($"Client {client.Username}\n");
+                    richTextBox.AppendText($"{client.Username}\n");
                 }
             }));
         }
@@ -236,13 +234,6 @@ namespace Server_Application_CS408
                     if (!subscribedClientsIF100.Contains(clientInfo))
                     {
                         subscribedClientsIF100.Add(clientInfo);
-/*
-                        if (!allSubscribedClients.Contains(clientInfo))
-                        {
-                            allSubscribedClients.Add(clientInfo);
-                            UpdateSubscribedClientsList("All", allSubscribedClients, richTextBox_AllChannels);
-                        }*/
-
                         UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     }
                     break;
@@ -250,14 +241,6 @@ namespace Server_Application_CS408
                     if (!subscribedClientsSPS101.Contains(clientInfo))
                     {
                         subscribedClientsSPS101.Add(clientInfo);
-
-                        /*
-                        if (!allSubscribedClients.Contains(clientInfo))
-                        {
-                            allSubscribedClients.Add(clientInfo);
-                            UpdateSubscribedClientsList("All", allSubscribedClients, richTextBox_AllChannels);
-                        }*/
-
                         UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
                     }
                     break;
@@ -278,14 +261,6 @@ namespace Server_Application_CS408
                     if (subscribedClientsIF100.Contains(clientInfo))
                     {
                         subscribedClientsIF100.Remove(clientInfo);
-
-                        /*
-                        if (!subscribedClientsSPS101.Contains(clientInfo))
-                        {
-                            allSubscribedClients.Remove(clientInfo);
-                            UpdateSubscribedClientsList("All", allSubscribedClients, richTextBox_AllChannels);
-                        }*/
-
                         UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     }
                     break;
@@ -293,14 +268,6 @@ namespace Server_Application_CS408
                     if (subscribedClientsSPS101.Contains(clientInfo))
                     {
                         subscribedClientsSPS101.Remove(clientInfo);
-
-                        /*
-                        if (!subscribedClientsIF100.Contains(clientInfo))
-                        {
-                            allSubscribedClients.Remove(clientInfo);
-                            UpdateSubscribedClientsList("All", allSubscribedClients, richTextBox_AllChannels);
-                        }*/
-
                         UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
                     }
                     break;
