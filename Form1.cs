@@ -238,6 +238,7 @@ namespace Server_Application_CS408
                         subscribedClientsIF100.Add(clientInfo);
                         SendToClient(channel, clientInfo, "SubscribedtoIF100");
                         UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
+                        UpdateRichTextBox($"Client {clientInfo.Username} subscribed to the IF100 channel.\n");
                     }
                     break;
                 case "SPS101":
@@ -245,8 +246,8 @@ namespace Server_Application_CS408
                     {
                         subscribedClientsSPS101.Add(clientInfo);
                         SendToClient(channel, clientInfo, "SubscribedtoSPS101");
-
                         UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
+                        UpdateRichTextBox($"Client {clientInfo.Username} subscribed to the SPS101 channel.\n");
                     }
                     break;
                 default:
@@ -267,8 +268,8 @@ namespace Server_Application_CS408
                     {
                         subscribedClientsIF100.Remove(clientInfo);
                         SendToClient(channel, clientInfo, "UnsubscribedfromIF100");
-
                         UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
+                        UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the IF100 channel.\n");
                     }
                     break;
                 case "SPS101":
@@ -276,8 +277,8 @@ namespace Server_Application_CS408
                     {
                         subscribedClientsSPS101.Remove(clientInfo);
                         SendToClient(channel, clientInfo, "UnsubscribedfromSPS101");
-
                         UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
+                        UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the SPS101 channel.\n");
                     }
                     break;
                 default:
