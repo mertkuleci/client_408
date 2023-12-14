@@ -47,7 +47,7 @@ namespace Server_Application_CS408
                     tcpListener = new TcpListener(ipAddress, port);
                     listenThread = new Thread(new ThreadStart(ListenForClients));
                     listenThread.Start();
-                    richTextBox_Actions.AppendText($"Server started on {ip}:{port}\n");
+                    richTextBox_Actions.AppendText($"Server starting on {ip}:{port}\n");
                     button_ServerStart.Enabled = false;     // Because all the inputs are valid and worked, we can disable the button from now on.
                 }
                 else
@@ -75,20 +75,31 @@ namespace Server_Application_CS408
 
         private void ListenForClients()
         {
-            // TRY & CATCH BLOCK DEFINETELY!
-            tcpListener.Start();
+            // If the user enters invalid numerical values in the field,
+            // this try & catch blocks handles it and redirects the user to
+            // fix the input field values.
 
-            while (true)
+            try
             {
-                // TRY & CATCH BLOCK MIGHT BE NECESSARY FOR THE COMMENT THREADS!
+                tcpListener.Start();
 
-                TcpClient tcpClient = tcpListener.AcceptTcpClient();
-                ClientInfo clientInfo = new ClientInfo(tcpClient);
-                clients.Add(clientInfo);
+                while (true)
+                {
 
-                Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
-                clientThread.Start(clientInfo);
+                    TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                    ClientInfo clientInfo = new ClientInfo(tcpClient);
+                    clients.Add(clientInfo);
+
+                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
+                    clientThread.Start(clientInfo);
+                }
             }
+            catch (Exception ex)
+            { 
+                UpdateRichTextBox($"Server could not start properly. Something went wrong: {ex.Message}\n");
+                button_ServerStart.Invoke(new Action(() => button_ServerStart.Enabled = true));
+            }
+
         }
 
         private void HandleClientComm(object clientObj)
@@ -134,6 +145,21 @@ namespace Server_Application_CS408
                 if (clientInfo != null)
                     clients.Remove(clientInfo);
                 UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
+
+                if(clientInfo != null && subscribedClientsIF100.Contains(clientInfo))
+                {
+                    subscribedClientsIF100.Remove(clientInfo);
+                    UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
+                    UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the IF100 channel due to the connection termination\n");
+
+                }
+                if (clientInfo != null && subscribedClientsSPS101.Contains(clientInfo))
+                {
+                    subscribedClientsSPS101.Remove(clientInfo);
+                    UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
+                    UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the SPS101 channel due to the connection termination\n");
+                }
+
             }
         }
 
