@@ -211,24 +211,31 @@ namespace Server_Application_CS408
 
         private void ProcessMessage(ClientInfo clientInfo, string message)
         {
-            // Assuming messages are formatted as "ACTION|CHANNEL|DATA"
+            // Assuming messages are formatted as "ACTION|CHANNEL|dummy"
             string[] parts = message.Split('|');
+            string data = " ", username;
+
+            int firstIndex = message.IndexOf('|');
+            int secondIndex = message.IndexOf('|', firstIndex + 1);
+            int lastIndex = message.LastIndexOf('|');
+
+
+            if (parts[2] != "dummy")
+            {
+                data = message.Substring(secondIndex+1, lastIndex - secondIndex-1);
+            }
 
             string action = parts[0].ToUpper();
             string channel = parts[1];
-            string username;
-
-            string debug = action + " " + channel;
-            //UpdateRichTextBox(debug + "\n");
 
             switch (action)
             {
                 case "CONNECT":
-                    username = parts[1];
+                    username = parts[2];
                     HandleClientConnect(clientInfo, username);
                     break;
                 case "DISCONNECT":
-                    username = parts[1];
+                    username = parts[2];
                     clientInfo.isConnected = false;
                     SendToClient(action, clientInfo, $"Client disconnected: {clientInfo.Username}\n");
                     UpdateRichTextBox($"Client disconnected: {clientInfo.Username}\n");
@@ -263,7 +270,7 @@ namespace Server_Application_CS408
                     {
                         if (clientInfo.isConnected == true && subscribedClientsIF100.Contains(clientInfo))
                         {
-                            string data = parts[2];
+                            data = message.Substring(secondIndex+1, lastIndex - secondIndex - 1);
                             SendMessageToChannel(clientInfo, channel, data);
                             break;
                         }
@@ -272,7 +279,7 @@ namespace Server_Application_CS408
                     {
                         if (clientInfo.isConnected == true && subscribedClientsSPS101.Contains(clientInfo))
                         {
-                            string data = parts[2];
+                            data = message.Substring(secondIndex+1, lastIndex - secondIndex - 1);
                             SendMessageToChannel(clientInfo, channel, data);
                             break;
                         }
