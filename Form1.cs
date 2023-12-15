@@ -247,7 +247,7 @@ namespace Server_Application_CS408
                     UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
                     UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
-
+                    DisconnectClient(clientInfo);
                     break;
                 case "SUBSCRIBE":
                     if (clientInfo.isConnected == true)
