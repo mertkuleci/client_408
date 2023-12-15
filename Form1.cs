@@ -147,7 +147,7 @@ namespace Server_Application_CS408
                 UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
 
                 if(clientInfo != null && subscribedClientsIF100.Contains(clientInfo))
-                {
+                {                   
                     subscribedClientsIF100.Remove(clientInfo);
                     UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the IF100 channel due to the connection termination\n");
@@ -169,15 +169,26 @@ namespace Server_Application_CS408
             if (IsUsernameUnique(username))
             {
                 // Username is unique, store it in the ClientInfo instance
-                clientInfo.Username = username;
 
-                
-                clientInfo.isConnected = true;
+                if (IsUsernameValid(username)) {
+                    clientInfo.Username = username;
 
-                // Print the username in the actions richtext box after it is parsed properly.
-                UpdateRichTextBox($"Client connected: {clientInfo.Username}\n");
-                UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
-                SendToClient($"CONNECTED", clientInfo, $"{username} connected to the server \n");
+
+                    clientInfo.isConnected = true;
+
+                    // Print the username in the actions richtext box after it is parsed properly.
+                    UpdateRichTextBox($"Client connected: {clientInfo.Username}\n");
+                    UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
+                    SendToClient($"CONNECTED", clientInfo, $"{username} connected to the server \n");
+                }
+                else
+                {
+
+                    UpdateRichTextBox($"A client tried to access with a username that is not valid. Request is rejected\n");
+                    SendToClient("NOTUNIQUE", clientInfo, "The username you are using is not valid. It cannot contain a charecter other than letter, number or dot. Try it again with a different username.\n");
+                    DisconnectClient(clientInfo);
+                }
+              
 
 
             }
@@ -194,6 +205,28 @@ namespace Server_Application_CS408
             // Check if the username is unique among connected clients
             return !clients.Any(client => client.Username != null && client.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
         }
+
+        private bool IsUsernameValid(string username)
+        {
+            // Check if the username is not empty
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return false;
+            }
+
+            // Check if the username contains only letters, numbers, or "."
+            foreach (char c in username)
+            {
+                if (!char.IsLetterOrDigit(c) && c != '.')
+                {
+                    return false;
+                }
+            }
+
+            // If all checks pass, the username is valid
+            return true;
+        }
+
 
         private void DisconnectClient(ClientInfo clientInfo)
         {
@@ -231,11 +264,11 @@ namespace Server_Application_CS408
             switch (action)
             {
                 case "CONNECT":
-                    username = parts[2];
+                    username = message.Substring(lastIndex+1);
                     HandleClientConnect(clientInfo, username);
                     break;
                 case "DISCONNECT":
-                    username = parts[2];
+                    username = message.Substring(lastIndex + 1);
                     clientInfo.isConnected = false;
                     SendToClient(action, clientInfo, $"Client disconnected: {clientInfo.Username}\n");
                     UpdateRichTextBox($"Client disconnected: {clientInfo.Username}\n");
@@ -252,7 +285,6 @@ namespace Server_Application_CS408
                 case "SUBSCRIBE":
                     if (clientInfo.isConnected == true)
                     {
-                        
                         SubscribeToChannel(clientInfo, channel);
                         break;
                     }
@@ -268,20 +300,44 @@ namespace Server_Application_CS408
                 case "SEND":
                     if (channel == "IF100")
                     {
-                        if (clientInfo.isConnected == true && subscribedClientsIF100.Contains(clientInfo))
+                        if (clientInfo.isConnected == true)
                         {
-                            data = message.Substring(secondIndex+1, lastIndex - secondIndex - 1);
-                            SendMessageToChannel(clientInfo, channel, data);
-                            break;
+                            if (subscribedClientsIF100.Contains(clientInfo))
+                            {
+                                data = message.Substring(secondIndex + 1, lastIndex - secondIndex - 1);
+                                SendMessageToChannel(clientInfo, channel, data);
+                                break;
+                            }
+                            else
+                            {
+                                SendToClient("IF100unsub", clientInfo, "Please subscribe to send message!");
+
+                            }
+                        }
+                        else
+                        {
+                            SendToClient("IF100uncon", clientInfo, "Please connect to send message!");
                         }
                     }
                     else
                     {
-                        if (clientInfo.isConnected == true && subscribedClientsSPS101.Contains(clientInfo))
+                        if (clientInfo.isConnected == true)
                         {
-                            data = message.Substring(secondIndex+1, lastIndex - secondIndex - 1);
-                            SendMessageToChannel(clientInfo, channel, data);
-                            break;
+                            if (subscribedClientsSPS101.Contains(clientInfo))
+                            {
+                                data = message.Substring(secondIndex + 1, lastIndex - secondIndex - 1);
+                                SendMessageToChannel(clientInfo, channel, data);
+                                break;
+                            }
+                            else
+                            {
+                                SendToClient("SPS101unsub", clientInfo, "Please subscribe to send message!");
+
+                            }
+                        }
+                        else
+                        {
+                            SendToClient("SPS101uncon", clientInfo, "Please connect to send message!");
                         }
                     }
                     break;
