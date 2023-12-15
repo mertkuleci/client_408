@@ -8,19 +8,24 @@
     "net6.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\ayhan\\.nuget\\packages\\": {}
+    "C:\\Users\\HasanFıratYılmaz\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ayhan\\Source\\Repos\\client_408\\Server_Application_CS408.csproj",
+      "projectUniqueName": "C:\\Users\\HasanFıratYılmaz\\source\\repos\\HFyilmaz\\Server_Application_408\\Server_Application_CS408.csproj",
       "projectName": "Server_Application_CS408",
-      "projectPath": "C:\\Users\\ayhan\\Source\\Repos\\client_408\\Server_Application_CS408.csproj",
-      "packagesPath": "C:\\Users\\ayhan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ayhan\\Source\\Repos\\client_408\\obj\\",
+      "projectPath": "C:\\Users\\HasanFıratYılmaz\\source\\repos\\HFyilmaz\\Server_Application_408\\Server_Application_CS408.csproj",
+      "packagesPath": "C:\\Users\\HasanFıratYılmaz\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\HasanFıratYılmaz\\source\\repos\\HFyilmaz\\Server_Application_408\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\ayhan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HasanFıratYılmaz\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -64,8 +69,16 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file C:\\Users\\HasanFıratYılmaz\\source\\repos\\HFyilmaz\\Server_Application_408\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }
