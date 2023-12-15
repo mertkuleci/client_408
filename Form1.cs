@@ -271,15 +271,24 @@ namespace Server_Application_CS408
                     username = message.Substring(lastIndex + 1);
                     clientInfo.isConnected = false;
                     SendToClient(action, clientInfo, $"Client disconnected: {clientInfo.Username}\n");
-                    UpdateRichTextBox($"Client disconnected: {clientInfo.Username}\n");
 
                     clients.Remove(clientInfo);
-                    subscribedClientsIF100.Remove(clientInfo);
-                    subscribedClientsSPS101.Remove(clientInfo);
+                    if(subscribedClientsIF100.Contains(clientInfo))
+                    {
+                        subscribedClientsIF100.Remove(clientInfo);
+                        UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the IF100 channel.\n");
+                    }
+                    if (subscribedClientsSPS101.Contains(clientInfo))
+                    {
+                        subscribedClientsSPS101.Remove(clientInfo);
+                        UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the SPS101 channel.\n");
+                    }
+                    UpdateRichTextBox($"Client disconnected: {clientInfo.Username}\n");
 
                     UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
                     UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     UpdateSubscribedClientsList("SPS101", subscribedClientsSPS101, richTextBox_SPS101);
+
                     DisconnectClient(clientInfo);
                     break;
                 case "SUBSCRIBE":
