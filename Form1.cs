@@ -14,8 +14,8 @@ namespace Server_Application_CS408
             public TcpClient TcpClient { get; }
             public string IP { get; }
             public int Port { get; }
-            public string Username { get; set; } 
-            
+            public string Username { get; set; }
+
             public bool isConnected { get; set; }// Could be set after its initialization.
 
             public ClientInfo(TcpClient tcpClient)
@@ -96,7 +96,7 @@ namespace Server_Application_CS408
                 }
             }
             catch (Exception ex)
-            { 
+            {
                 UpdateRichTextBox($"Server could not start properly. Something went wrong: {ex.Message}\n");
                 button_ServerStart.Invoke(new Action(() => button_ServerStart.Enabled = true));
             }
@@ -147,8 +147,8 @@ namespace Server_Application_CS408
                     clients.Remove(clientInfo);
                 UpdateSubscribedClientsList("All", clients, richTextBox_AllChannels);
 
-                if(clientInfo != null && subscribedClientsIF100.Contains(clientInfo))
-                {                   
+                if (clientInfo != null && subscribedClientsIF100.Contains(clientInfo))
+                {
                     subscribedClientsIF100.Remove(clientInfo);
                     UpdateSubscribedClientsList("IF100", subscribedClientsIF100, richTextBox_IF100);
                     UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the IF100 channel due to the connection termination\n");
@@ -171,7 +171,8 @@ namespace Server_Application_CS408
             {
                 // Username is unique, store it in the ClientInfo instance
 
-                if (IsUsernameValid(username)) {
+                if (IsUsernameValid(username))
+                {
                     clientInfo.Username = username;
 
 
@@ -189,7 +190,7 @@ namespace Server_Application_CS408
                     SendToClient("NOTUNIQUE", clientInfo, "The username you are using is not valid. It cannot contain a charecter other than letter, number or dot. Try it again with a different username.\n");
                     DisconnectClient(clientInfo);
                 }
-              
+
 
 
             }
@@ -256,7 +257,7 @@ namespace Server_Application_CS408
 
             if (parts[2] != "dummy")
             {
-                data = message.Substring(secondIndex+1, lastIndex - secondIndex-1);
+                data = message.Substring(secondIndex + 1, lastIndex - secondIndex - 1);
             }
 
             string action = parts[0].ToUpper();
@@ -265,7 +266,7 @@ namespace Server_Application_CS408
             switch (action)
             {
                 case "CONNECT":
-                    username = message.Substring(lastIndex+1);
+                    username = message.Substring(lastIndex + 1);
                     HandleClientConnect(clientInfo, username);
                     break;
                 case "DISCONNECT":
@@ -274,7 +275,7 @@ namespace Server_Application_CS408
                     SendToClient(action, clientInfo, $"Client disconnected: {clientInfo.Username}\n");
 
                     clients.Remove(clientInfo);
-                    if(subscribedClientsIF100.Contains(clientInfo))
+                    if (subscribedClientsIF100.Contains(clientInfo))
                     {
                         subscribedClientsIF100.Remove(clientInfo);
                         UpdateRichTextBox($"Client {clientInfo.Username} unsubscribed from the IF100 channel.\n");
@@ -299,7 +300,7 @@ namespace Server_Application_CS408
                         break;
                     }
                     break;
-                    
+
                 case "UNSUBSCRIBE":
                     if (clientInfo.isConnected == true)
                     {

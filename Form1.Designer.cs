@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Server_Application));
             textBox_IP = new TextBox();
             label_IP = new Label();
             label_Port = new Label();
@@ -186,6 +187,7 @@
             Controls.Add(label_Port);
             Controls.Add(label_IP);
             Controls.Add(textBox_IP);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Server_Application";
             Text = "Server Application";
             ResumeLayout(false);
