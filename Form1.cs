@@ -34,6 +34,7 @@ namespace Server_Application_CS408
         public Server_Application()
         {
             InitializeComponent();
+            this.FormClosing += Form1_FormClosing;
         }
 
         private void StartServer(string ip, int port)
@@ -484,5 +485,23 @@ namespace Server_Application_CS408
             }
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Terminate connections and close sockets for all connected clients
+            foreach (var clientInfo in clients)
+            {
+                SendToClient("DISCONNECT", clientInfo, "dummy");
+                DisconnectClient(clientInfo);
+            }
+
+            // Close the listener and clear the clients list
+            if (tcpListener != null)
+            {
+                tcpListener.Stop();
+                clients.Clear();
+            }
+
+            Environment.Exit(0);
+        }
     }
 }
